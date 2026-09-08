@@ -73,6 +73,7 @@ export type ChannelCredentialsImportResult = {
 
 export const CONFIG_STORE_KEY = "infinite-canvas:ai_config_store";
 const CHANNEL_MODEL_SEPARATOR = "::";
+const REMOVED_MODEL_NAMES = new Set(["grok-imagine-video", "gpt-5.5", "gpt-4o-mini-tts"]);
 const OPENAI_BASE_URL = DEFAULT_API_BASE_URL || "https://api.openai.com";
 const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com";
 export const LOCAL_PROXY_PACKAGE = "@basketikun/canvas-proxy";
@@ -92,17 +93,14 @@ export const defaultConfig: AiConfig = {
             apiFormat: "openai",
             models: [
                 { name: DEFAULT_IMAGE_MODEL, capability: "image" },
-                { name: "grok-imagine-video", capability: "video" },
-                { name: "gpt-5.5", capability: "text" },
-                { name: "gpt-4o-mini-tts", capability: "audio" },
             ],
         },
     ],
     model: `default::${DEFAULT_IMAGE_MODEL}`,
     imageModel: `default::${DEFAULT_IMAGE_MODEL}`,
-    videoModel: "default::grok-imagine-video",
-    textModel: "default::gpt-5.5",
-    audioModel: "default::gpt-4o-mini-tts",
+    videoModel: "",
+    textModel: "",
+    audioModel: "",
     audioVoice: "alloy",
     audioFormat: "mp3",
     audioSpeed: "1",
@@ -114,7 +112,7 @@ export const defaultConfig: AiConfig = {
     videoMode: "frames",
     systemPrompt: "",
     reasoningEffort: "auto",
-    models: [`default::${DEFAULT_IMAGE_MODEL}`, "default::grok-imagine-video", "default::gpt-5.5", "default::gpt-4o-mini-tts"],
+    models: [`default::${DEFAULT_IMAGE_MODEL}`],
     quality: "auto",
     size: "1:1",
     background: "",
@@ -257,9 +255,10 @@ export const useConfigStore = create<ConfigStore>()(
                         apiFormat: normalizeApiFormat(config.apiFormat),
                         channels,
                         models,
+                        model: normalizeModelOptionValue(config.model, channels) || normalizeModelOptionValue(config.imageModel, channels) || defaultConfig.imageModel,
                         imageModel: normalizeModelOptionValue(config.imageModel || config.model, channels),
                         videoModel: normalizeModelOptionValue(config.videoModel, channels),
-                        textModel: normalizeModelOptionValue(config.textModel || config.model, channels),
+                        textModel: normalizeModelOptionValue(config.textModel, channels),
                         audioModel: normalizeModelOptionValue(config.audioModel || defaultConfig.audioModel, channels),
                         audioVoice: config.audioVoice || defaultConfig.audioVoice,
                         audioFormat: config.audioFormat || defaultConfig.audioFormat,
@@ -292,7 +291,7 @@ export function normalizeChannelModels(models: Array<string | ChannelModel> | un
     const result: ChannelModel[] = [];
     for (const item of models || []) {
         const name = (typeof item === "string" ? item : item?.name || "").trim();
-        if (!name || seen.has(name)) continue;
+        if (!name || REMOVED_MODEL_NAMES.has(name) || seen.has(name)) continue;
         seen.add(name);
         const capability = typeof item === "string" ? guessCapability(name) : item.capability || guessCapability(name);
         const script = typeof item === "string" ? undefined : item.script?.trim() || undefined;
