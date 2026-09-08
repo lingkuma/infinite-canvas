@@ -21,6 +21,17 @@ Open `http://localhost:3000`.
 docker compose -f docker-compose.local.yml up -d --build
 ```
 
+The local Compose file binds the app on `0.0.0.0:3000` by default. To change the host port and set default browser-side AI configuration, create a local `.env` file (do not commit it):
+
+```dotenv
+DEFAULT_API_BASE_URL=https://your-openai-compatible-host
+DEFAULT_API_KEY=sk-your-key
+DEFAULT_IMAGE_MODEL=gpt-image-2
+APP_PORT=3001
+```
+
+These values are injected when the container starts. They only affect fresh browser configuration; settings already saved in the browser remain local to that browser.
+
 ## Documentation image
 
 The documentation in `docs/` is a separate Next.js standalone application with server capabilities.

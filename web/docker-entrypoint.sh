@@ -13,9 +13,15 @@ sanitize_id() {
 
 GA4_ID=$(sanitize_id "${ANALYTICS_GA4_ID:-}")
 BAIDU_ID=$(sanitize_id "${ANALYTICS_BAIDU_ID:-}")
+DEFAULT_API_BASE_URL=$(printf '%s' "${DEFAULT_API_BASE_URL:-}" | tr -cd 'A-Za-z0-9:/?&=_#.-')
+DEFAULT_API_KEY=$(printf '%s' "${DEFAULT_API_KEY:-}" | tr -cd 'A-Za-z0-9._~-')
+DEFAULT_IMAGE_MODEL=$(printf '%s' "${DEFAULT_IMAGE_MODEL:-gpt-image-2}" | tr -cd 'A-Za-z0-9._:-')
 
 cat > /usr/share/nginx/html/config.js <<EOF
 window.__RUNTIME_CONFIG__ = {
+  DEFAULT_API_BASE_URL: "${DEFAULT_API_BASE_URL}",
+  DEFAULT_API_KEY: "${DEFAULT_API_KEY}",
+  DEFAULT_IMAGE_MODEL: "${DEFAULT_IMAGE_MODEL}",
   ANALYTICS_GA4_ID: "${GA4_ID}",
   ANALYTICS_BAIDU_ID: "${BAIDU_ID}"
 };

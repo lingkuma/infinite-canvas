@@ -6,6 +6,9 @@
 // Only GA4 and Baidu are supported. Both accept IDs only, and script URLs are assembled in code without arbitrary scripts or inline JavaScript.
 
 type RuntimeConfig = {
+    DEFAULT_API_BASE_URL?: string;
+    DEFAULT_API_KEY?: string;
+    DEFAULT_IMAGE_MODEL?: string;
     ANALYTICS_GA4_ID?: string; // GA4 measurement ID (G-XXXX)
     ANALYTICS_BAIDU_ID?: string; // Baidu Analytics site ID
 };
@@ -27,3 +30,6 @@ function read(key: keyof RuntimeConfig, buildTime: string | undefined, fallback 
 
 export const ANALYTICS_GA4_ID = read("ANALYTICS_GA4_ID", import.meta.env.VITE_ANALYTICS_GA4_ID);
 export const ANALYTICS_BAIDU_ID = read("ANALYTICS_BAIDU_ID", import.meta.env.VITE_ANALYTICS_BAIDU_ID);
+export const DEFAULT_API_BASE_URL = read("DEFAULT_API_BASE_URL", import.meta.env.VITE_DEFAULT_API_BASE_URL);
+export const DEFAULT_API_KEY = read("DEFAULT_API_KEY", import.meta.env.VITE_DEFAULT_API_KEY);
+export const DEFAULT_IMAGE_MODEL = read("DEFAULT_IMAGE_MODEL", import.meta.env.VITE_DEFAULT_IMAGE_MODEL, "gpt-image-2");
