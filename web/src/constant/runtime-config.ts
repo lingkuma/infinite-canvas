@@ -9,6 +9,8 @@ type RuntimeConfig = {
     DEFAULT_API_BASE_URL?: string;
     DEFAULT_API_KEY?: string;
     DEFAULT_IMAGE_MODEL?: string;
+    DEFAULT_PROXY_ENABLED?: string;
+    DEFAULT_PROXY_URL?: string;
     ANALYTICS_GA4_ID?: string; // GA4 measurement ID (G-XXXX)
     ANALYTICS_BAIDU_ID?: string; // Baidu Analytics site ID
 };
@@ -33,3 +35,5 @@ export const ANALYTICS_BAIDU_ID = read("ANALYTICS_BAIDU_ID", import.meta.env.VIT
 export const DEFAULT_API_BASE_URL = read("DEFAULT_API_BASE_URL", import.meta.env.VITE_DEFAULT_API_BASE_URL);
 export const DEFAULT_API_KEY = read("DEFAULT_API_KEY", import.meta.env.VITE_DEFAULT_API_KEY);
 export const DEFAULT_IMAGE_MODEL = read("DEFAULT_IMAGE_MODEL", import.meta.env.VITE_DEFAULT_IMAGE_MODEL, "gpt-image-2");
+export const DEFAULT_PROXY_ENABLED = read("DEFAULT_PROXY_ENABLED", import.meta.env.VITE_DEFAULT_PROXY_ENABLED, "false") === "true";
+export const DEFAULT_PROXY_URL = read("DEFAULT_PROXY_URL", import.meta.env.VITE_DEFAULT_PROXY_URL);

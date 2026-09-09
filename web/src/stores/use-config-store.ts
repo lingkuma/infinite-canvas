@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 import { nanoid } from "nanoid";
 
 import i18n from "@/i18n";
-import { DEFAULT_API_BASE_URL, DEFAULT_API_KEY, DEFAULT_IMAGE_MODEL } from "@/constant/runtime-config";
+import { DEFAULT_API_BASE_URL, DEFAULT_API_KEY, DEFAULT_IMAGE_MODEL, DEFAULT_PROXY_ENABLED, DEFAULT_PROXY_URL } from "@/constant/runtime-config";
 
 export type ApiCallFormat = "openai" | "gemini";
 export type ModelCapability = "image" | "video" | "text" | "audio";
@@ -77,7 +77,7 @@ const REMOVED_MODEL_NAMES = new Set(["grok-imagine-video", "gpt-5.5", "gpt-4o-mi
 const OPENAI_BASE_URL = DEFAULT_API_BASE_URL || "https://api.openai.com";
 const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com";
 export const LOCAL_PROXY_PACKAGE = "@basketikun/canvas-proxy";
-export const DEFAULT_LOCAL_PROXY_URL = "http://127.0.0.1:23210";
+export const DEFAULT_LOCAL_PROXY_URL = DEFAULT_PROXY_URL || "http://127.0.0.1:23210";
 
 export const defaultConfig: AiConfig = {
     channelMode: "local",
@@ -118,7 +118,7 @@ export const defaultConfig: AiConfig = {
     background: "",
     count: "1",
     canvasImageCount: "3",
-    proxyEnabled: false,
+    proxyEnabled: DEFAULT_PROXY_ENABLED,
     proxyUrl: DEFAULT_LOCAL_PROXY_URL,
 };
 

@@ -10,4 +10,14 @@ services:
       DEFAULT_API_BASE_URL: ${DEFAULT_API_BASE_URL:-}
       DEFAULT_API_KEY: ${DEFAULT_API_KEY:-}
       DEFAULT_IMAGE_MODEL: ${DEFAULT_IMAGE_MODEL:-gpt-image-2}
+      DEFAULT_PROXY_ENABLED: ${DEFAULT_PROXY_ENABLED:-false}
+      DEFAULT_PROXY_URL: ${DEFAULT_PROXY_URL:-}
+    restart: unless-stopped
+
+  proxy:
+    build:
+      context: ./canvas-proxy
+      dockerfile: Dockerfile
+    ports:
+      - "0.0.0.0:${PROXY_PORT:-23210}:23210"
     restart: unless-stopped
