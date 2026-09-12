@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 import { nanoid } from "nanoid";
 
 import i18n from "@/i18n";
-import { DEFAULT_API_BASE_URL, DEFAULT_API_KEY, DEFAULT_IMAGE_MODEL, DEFAULT_PROXY_ENABLED, DEFAULT_PROXY_URL } from "@/constant/runtime-config";
+import { DEFAULT_API_BASE_URL, DEFAULT_API_KEY, DEFAULT_IMAGE_MODEL, DEFAULT_PROXY_ENABLED, DEFAULT_PROXY_URL, GROK_IMAGE2_API_KEY, GROK_IMAGE2_MODEL } from "@/constant/runtime-config";
 
 export type ApiCallFormat = "openai" | "gemini";
 export type ModelCapability = "image" | "video" | "text" | "audio";
@@ -94,6 +94,14 @@ export const defaultConfig: AiConfig = {
             models: [
                 { name: DEFAULT_IMAGE_MODEL, capability: "image" },
             ],
+        },
+        {
+            id: "grok-image2",
+            name: "YYDS",
+            baseUrl: OPENAI_BASE_URL,
+            apiKey: GROK_IMAGE2_API_KEY,
+            apiFormat: "openai",
+            models: [{ name: GROK_IMAGE2_MODEL, capability: "image" }],
         },
     ],
     model: `default::${DEFAULT_IMAGE_MODEL}`,

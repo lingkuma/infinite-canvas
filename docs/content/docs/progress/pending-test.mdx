@@ -64,3 +64,4 @@ The current release needs manual verification in these areas:
 - Canvas video task resume: starting an OpenAI-style video generation should store the remote task ID on the video node. After a page refresh, a still-pending video should keep polling automatically; if polling stopped, **Get task status** should resume with that task ID until the video is ready, the task fails, or the status request errors. Task failure should then allow a normal retry that creates a new generation.
 
 The Chinese version contains the complete item-by-item acceptance checklist.
+- `grok-image2` 图片渠道：配置面板应显示 YYDS 渠道及 `grok-imagine-image-2.0` 模型，并可正常发起生图请求。
