@@ -1,13 +1,18 @@
 services:
   app:
-    image: ghcr.io/basketikun/infinite-canvas:latest
+    image: infinite-canvas:local
     container_name: infinite-canvas
+    build:
+      context: .
+      dockerfile: Dockerfile.local-runtime
     ports:
       - "0.0.0.0:${APP_PORT:-3000}:3000"
     environment:
       DEFAULT_API_BASE_URL: ${DEFAULT_API_BASE_URL:-}
       DEFAULT_API_KEY: ${DEFAULT_API_KEY:-}
       DEFAULT_IMAGE_MODEL: ${DEFAULT_IMAGE_MODEL:-gpt-image-2.5}
+      GROK_IMAGE2_API_KEY: ${GROK_IMAGE2_API_KEY:-}
+      GROK_IMAGE2_MODEL: ${GROK_IMAGE2_MODEL:-grok-imagine-image-2.0}
       DEFAULT_PROXY_ENABLED: ${DEFAULT_PROXY_ENABLED:-false}
       DEFAULT_PROXY_URL: ${DEFAULT_PROXY_URL:-}
     restart: unless-stopped

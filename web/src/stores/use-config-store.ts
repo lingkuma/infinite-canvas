@@ -120,7 +120,7 @@ export const defaultConfig: AiConfig = {
     videoMode: "frames",
     systemPrompt: "",
     reasoningEffort: "auto",
-    models: [`default::${DEFAULT_IMAGE_MODEL}`],
+    models: [`default::${DEFAULT_IMAGE_MODEL}`, `grok-image2::${GROK_IMAGE2_MODEL}`],
     quality: "auto",
     size: "1:1",
     background: "",
@@ -406,7 +406,7 @@ export function modelOptionLabel(config: AiConfig, value: string) {
     const decoded = decodeChannelModel(value);
     if (!decoded) return value;
     const channel = config.channels.find((item) => item.id === decoded.channelId);
-    return channel ? `${decoded.model}�?{channel.name}）` : decoded.model;
+    return channel ? `${decoded.model}�?{channel.name}）` : decoded.model;
 }
 
 export function modelOptionsFromChannels(channels: ModelChannel[]) {
@@ -453,17 +453,27 @@ function normalizeChannels(config: AiConfig) {
             models: normalizeChannelModels(channel.models),
         }),
     );
+    const defaultChannel = channels.find((channel) => channel.id === "default");
+    if (defaultChannel) {
+        defaultChannel.models = defaultChannel.models.filter((model) => model.name !== GROK_IMAGE2_MODEL);
+        if (!defaultChannel.models.some((model) => model.name === DEFAULT_IMAGE_MODEL)) {
+            defaultChannel.models.unshift({ name: DEFAULT_IMAGE_MODEL, capability: "image" });
+        }
+    }
     if (!channels.length) {
         channels.push(
             createModelChannel({
                 id: "default",
                 name: i18n.t("config.channels.defaultName"),
-                baseUrl: config.baseUrl || defaultConfig.baseUrl,
-                apiKey: config.apiKey || "",
+                baseUrl: OPENAI_BASE_URL,
+                apiKey: DEFAULT_API_KEY,
                 apiFormat: config.apiFormat || defaultConfig.apiFormat,
-                models: normalizeChannelModels([config.model, config.imageModel, config.videoModel, config.textModel, config.audioModel].map(modelOptionName)),
+                models: [{ name: DEFAULT_IMAGE_MODEL, capability: "image" }],
             }),
         );
+    }
+    if (GROK_IMAGE2_API_KEY && !channels.some((channel) => channel.id === "grok-image2")) {
+        channels.push(createModelChannel({ id: "grok-image2", name: "Grok Image 2", baseUrl: OPENAI_BASE_URL, apiKey: GROK_IMAGE2_API_KEY, apiFormat: "openai", models: [{ name: GROK_IMAGE2_MODEL, capability: "image" }] }));
     }
     return channels;
 }
