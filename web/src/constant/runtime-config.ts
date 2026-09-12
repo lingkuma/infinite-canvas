@@ -36,7 +36,7 @@ export const ANALYTICS_GA4_ID = read("ANALYTICS_GA4_ID", import.meta.env.VITE_AN
 export const ANALYTICS_BAIDU_ID = read("ANALYTICS_BAIDU_ID", import.meta.env.VITE_ANALYTICS_BAIDU_ID);
 export const DEFAULT_API_BASE_URL = read("DEFAULT_API_BASE_URL", import.meta.env.VITE_DEFAULT_API_BASE_URL);
 export const DEFAULT_API_KEY = read("DEFAULT_API_KEY", import.meta.env.VITE_DEFAULT_API_KEY);
-export const DEFAULT_IMAGE_MODEL = read("DEFAULT_IMAGE_MODEL", import.meta.env.VITE_DEFAULT_IMAGE_MODEL, "gpt-image-2");
+export const DEFAULT_IMAGE_MODEL = read("DEFAULT_IMAGE_MODEL", import.meta.env.VITE_DEFAULT_IMAGE_MODEL, "gpt-image-2.5");
 export const GROK_IMAGE2_API_KEY = read("GROK_IMAGE2_API_KEY", import.meta.env.VITE_GROK_IMAGE2_API_KEY);
 export const GROK_IMAGE2_MODEL = read("GROK_IMAGE2_MODEL", import.meta.env.VITE_GROK_IMAGE2_MODEL, "grok-imagine-image-2.0");
 export const DEFAULT_PROXY_ENABLED = read("DEFAULT_PROXY_ENABLED", import.meta.env.VITE_DEFAULT_PROXY_ENABLED, "false") === "true";
