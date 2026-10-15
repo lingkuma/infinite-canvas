@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 import { nanoid } from "nanoid";
 
 import i18n from "@/i18n";
-import { DEFAULT_API_BASE_URL, DEFAULT_API_KEY, DEFAULT_IMAGE_MODEL, DEFAULT_PROXY_ENABLED, DEFAULT_PROXY_URL, GROK_IMAGE2_API_KEY, GROK_IMAGE2_MODEL } from "@/constant/runtime-config";
+import { DEFAULT_API_BASE_URL, DEFAULT_API_KEY, DEFAULT_IMAGE_MODEL, DEFAULT_PROXY_ENABLED, DEFAULT_PROXY_URL, GROK_IMAGE2_API_KEY, GROK_IMAGE2_MODEL, NANO_BANANA_API_KEY, NANO_BANANA_MODEL } from "@/constant/runtime-config";
 
 export type ApiCallFormat = "openai" | "gemini";
 export type ModelCapability = "image" | "video" | "text" | "audio";
@@ -103,6 +103,14 @@ export const defaultConfig: AiConfig = {
             apiFormat: "openai",
             models: [{ name: GROK_IMAGE2_MODEL, capability: "image" }],
         },
+        {
+            id: "nano-banana",
+            name: "Nano Banana",
+            baseUrl: OPENAI_BASE_URL,
+            apiKey: NANO_BANANA_API_KEY,
+            apiFormat: "openai",
+            models: [{ name: NANO_BANANA_MODEL, capability: "image" }],
+        },
     ],
     model: `default::${DEFAULT_IMAGE_MODEL}`,
     imageModel: `default::${DEFAULT_IMAGE_MODEL}`,
@@ -120,7 +128,7 @@ export const defaultConfig: AiConfig = {
     videoMode: "frames",
     systemPrompt: "",
     reasoningEffort: "auto",
-    models: [`default::${DEFAULT_IMAGE_MODEL}`, `grok-image2::${GROK_IMAGE2_MODEL}`],
+    models: [`default::${DEFAULT_IMAGE_MODEL}`, `grok-image2::${GROK_IMAGE2_MODEL}`, `nano-banana::${NANO_BANANA_MODEL}`],
     quality: "auto",
     size: "1:1",
     background: "",
@@ -467,6 +475,9 @@ function normalizeChannels(config: AiConfig) {
         } else if (channel.id === "grok-image2") {
             channel.baseUrl = OPENAI_BASE_URL;
             channel.apiKey = GROK_IMAGE2_API_KEY || channel.apiKey;
+        } else if (channel.id === "nano-banana") {
+            channel.baseUrl = OPENAI_BASE_URL;
+            channel.apiKey = NANO_BANANA_API_KEY || channel.apiKey;
         }
     }
     if (!channels.length) {
@@ -483,6 +494,9 @@ function normalizeChannels(config: AiConfig) {
     }
     if (GROK_IMAGE2_API_KEY && !channels.some((channel) => channel.id === "grok-image2")) {
         channels.push(createModelChannel({ id: "grok-image2", name: "Grok Image 2", baseUrl: OPENAI_BASE_URL, apiKey: GROK_IMAGE2_API_KEY, apiFormat: "openai", models: [{ name: GROK_IMAGE2_MODEL, capability: "image" }] }));
+    }
+    if (NANO_BANANA_API_KEY && !channels.some((channel) => channel.id === "nano-banana")) {
+        channels.push(createModelChannel({ id: "nano-banana", name: "Nano Banana", baseUrl: OPENAI_BASE_URL, apiKey: NANO_BANANA_API_KEY, apiFormat: "openai", models: [{ name: NANO_BANANA_MODEL, capability: "image" }] }));
     }
     return channels;
 }

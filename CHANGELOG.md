@@ -2,6 +2,7 @@
 
 ## Unreleased
 
++ [新增] 新增内置 `Nano Banana` 渠道，默认模型 `gemini-nano-banana-2.1`，密钥通过 `NANO_BANANA_API_KEY` 环境变量注入，旧浏览器配置自动补齐该渠道。
 + [调整] 内置预设渠道的接口地址和密钥改为始终跟随部署端运行时配置，浏览器旧缓存不再保留过期的端点和密钥。
 
 + [鏂板] 澧炲姞 YYDS 鐨?`grok-image2` 鍥剧墖娓犻亾锛岄粯璁ゆā鍨嬩负 `grok-imagine-image-2.0`銆?
