@@ -7,6 +7,8 @@ description: Implemented changes that still need manual verification
 
 The current release needs manual verification in these areas:
 
+- Preset channel sync: after deployment, a browser with previously cached settings should show the built-in `default` and `grok-image2` channels using the runtime endpoint and keys (for example the new `https://yyds.seqnode.com` base URL) after a page refresh, without manually clearing localStorage; custom channels should remain untouched.
+
 - Model cleanup: after deployment, refreshing a browser with existing settings should remove `grok-imagine-video`, `gpt-5.5`, and `gpt-4o-mini-tts`, leaving `gpt-image-2.5` available for image generation.
 
 - LAN proxy preset: from another device on the same LAN, the app should reach the deployment computer's proxy URL (for example `http://192.168.2.20:23210`) and route YYDS requests through its Mihomo TUN connection.

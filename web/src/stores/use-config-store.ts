@@ -460,6 +460,15 @@ function normalizeChannels(config: AiConfig) {
             defaultChannel.models.unshift({ name: DEFAULT_IMAGE_MODEL, capability: "image" });
         }
     }
+    for (const channel of channels) {
+        if (channel.id === "default") {
+            channel.baseUrl = OPENAI_BASE_URL;
+            channel.apiKey = DEFAULT_API_KEY || channel.apiKey;
+        } else if (channel.id === "grok-image2") {
+            channel.baseUrl = OPENAI_BASE_URL;
+            channel.apiKey = GROK_IMAGE2_API_KEY || channel.apiKey;
+        }
+    }
     if (!channels.length) {
         channels.push(
             createModelChannel({
