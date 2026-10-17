@@ -7,7 +7,9 @@ description: Implemented changes that still need manual verification
 
 The current release needs manual verification in these areas:
 
-- Preset channel sync: after deployment, a browser with previously cached settings should show the built-in `default` and `grok-image2` channels using the runtime endpoint and keys (for example the new `https://yyds.seqnode.com` base URL) after a page refresh, without manually clearing localStorage; custom channels should remain untouched. A browser that never had it should also gain the new built-in `Nano Banana` channel (`gemini-nano-banana-2.1`) with image generation working through it.
+- 画布模型选择：全局默认为 Nano Banana 时，在生成配置节点和节点提示词面板中选择 `gpt-image-2.5` 应立即显示为选中；关闭重开面板、刷新页面及再次生成时均保留该模型。全局默认模型改选 GPT 后刷新也应保留；切回 Nano Banana、Grok 应正常。
+
+- Preset channel sync: after deployment, a browser with previously cached settings should show the built-in `default` and `grok-image2` channels using the runtime endpoint and keys (for example the new `https://yyds.seqnode.com` base URL) after a page refresh, without manually clearing localStorage; custom channels should remain untouched. A browser that never had it should also gain the new built-in `Nano Banana` channel (`gemini-nano-banana-2.1`) with image generation working through it. New configurations should default to `nano-banana::gemini-nano-banana-2.1`; existing saved global and node model choices should remain unchanged after refresh.
 
 - Model cleanup: after deployment, refreshing a browser with existing settings should remove `grok-imagine-video`, `gpt-5.5`, and `gpt-4o-mini-tts`, leaving `gpt-image-2.5` available for image generation.
 
