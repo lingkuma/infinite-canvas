@@ -20,6 +20,9 @@ GROK_IMAGE2_API_KEY=$(printf '%s' "${GROK_IMAGE2_API_KEY:-}" | tr -cd 'A-Za-z0-9
 GROK_IMAGE2_MODEL=$(printf '%s' "${GROK_IMAGE2_MODEL:-grok-imagine-image-2.0}" | tr -cd 'A-Za-z0-9._:-')
 NANO_BANANA_API_KEY=$(printf '%s' "${NANO_BANANA_API_KEY:-}" | tr -cd 'A-Za-z0-9._~-')
 NANO_BANANA_MODEL=$(printf '%s' "${NANO_BANANA_MODEL:-gemini-nano-banana-2.1}" | tr -cd 'A-Za-z0-9._:-')
+SZBENMA_API_BASE_URL=$(printf '%s' "${SZBENMA_API_BASE_URL:-https://api.szbenma.cn}" | tr -cd 'A-Za-z0-9:/?&=_#.-')
+SZBENMA_API_KEY=$(printf '%s' "${SZBENMA_API_KEY:-}" | tr -cd 'A-Za-z0-9._~-')
+SZBENMA_MODEL=$(printf '%s' "${SZBENMA_MODEL:-gemini-4-argon}" | tr -cd 'A-Za-z0-9._:-')
 DEFAULT_PROXY_ENABLED=$(printf '%s' "${DEFAULT_PROXY_ENABLED:-false}" | tr -cd 'A-Za-z0-9')
 DEFAULT_PROXY_URL=$(printf '%s' "${DEFAULT_PROXY_URL:-}" | tr -cd 'A-Za-z0-9:/?&=_#.-')
 
@@ -32,6 +35,9 @@ window.__RUNTIME_CONFIG__ = {
   GROK_IMAGE2_MODEL: "${GROK_IMAGE2_MODEL}",
   NANO_BANANA_API_KEY: "${NANO_BANANA_API_KEY}",
   NANO_BANANA_MODEL: "${NANO_BANANA_MODEL}",
+  SZBENMA_API_BASE_URL: "${SZBENMA_API_BASE_URL}",
+  SZBENMA_API_KEY: "${SZBENMA_API_KEY}",
+  SZBENMA_MODEL: "${SZBENMA_MODEL}",
   DEFAULT_PROXY_ENABLED: "${DEFAULT_PROXY_ENABLED}",
   DEFAULT_PROXY_URL: "${DEFAULT_PROXY_URL}",
   ANALYTICS_GA4_ID: "${GA4_ID}",

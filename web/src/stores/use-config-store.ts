@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 import { nanoid } from "nanoid";
 
 import i18n from "@/i18n";
-import { DEFAULT_API_BASE_URL, DEFAULT_API_KEY, DEFAULT_IMAGE_MODEL, DEFAULT_PROXY_ENABLED, DEFAULT_PROXY_URL, GROK_IMAGE2_API_KEY, GROK_IMAGE2_MODEL, NANO_BANANA_API_KEY, NANO_BANANA_MODEL } from "@/constant/runtime-config";
+import { DEFAULT_API_BASE_URL, DEFAULT_API_KEY, DEFAULT_IMAGE_MODEL, DEFAULT_PROXY_ENABLED, DEFAULT_PROXY_URL, GROK_IMAGE2_API_KEY, GROK_IMAGE2_MODEL, NANO_BANANA_API_KEY, NANO_BANANA_MODEL, SZBENMA_API_BASE_URL, SZBENMA_API_KEY, SZBENMA_MODEL } from "@/constant/runtime-config";
 
 export type ApiCallFormat = "openai" | "gemini";
 export type ModelCapability = "image" | "video" | "text" | "audio";
@@ -76,6 +76,9 @@ const CHANNEL_MODEL_SEPARATOR = "::";
 const REMOVED_MODEL_NAMES = new Set(["grok-imagine-video", "gpt-5.5", "gpt-4o-mini-tts"]);
 const OPENAI_BASE_URL = DEFAULT_API_BASE_URL || "https://api.openai.com";
 const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com";
+const TEXT_CHANNEL_ID = "szbenma";
+const TEXT_CHANNEL_NAME = "SZBenma";
+const TEXT_MODEL_OPTION = `${TEXT_CHANNEL_ID}::${SZBENMA_MODEL}`;
 export const LOCAL_PROXY_PACKAGE = "@basketikun/canvas-proxy";
 export const DEFAULT_LOCAL_PROXY_URL = DEFAULT_PROXY_URL || "http://127.0.0.1:23210";
 
@@ -111,11 +114,19 @@ export const defaultConfig: AiConfig = {
             apiFormat: "openai",
             models: [{ name: NANO_BANANA_MODEL, capability: "image" }],
         },
+        {
+            id: TEXT_CHANNEL_ID,
+            name: TEXT_CHANNEL_NAME,
+            baseUrl: SZBENMA_API_BASE_URL,
+            apiKey: SZBENMA_API_KEY,
+            apiFormat: "openai",
+            models: [{ name: SZBENMA_MODEL, capability: "text" }],
+        },
     ],
     model: `default::${DEFAULT_IMAGE_MODEL}`,
     imageModel: `default::${DEFAULT_IMAGE_MODEL}`,
     videoModel: "",
-    textModel: "",
+    textModel: TEXT_MODEL_OPTION,
     audioModel: "",
     audioVoice: "alloy",
     audioFormat: "mp3",
@@ -128,7 +139,7 @@ export const defaultConfig: AiConfig = {
     videoMode: "frames",
     systemPrompt: "",
     reasoningEffort: "auto",
-    models: [`default::${DEFAULT_IMAGE_MODEL}`, `grok-image2::${GROK_IMAGE2_MODEL}`, `nano-banana::${NANO_BANANA_MODEL}`],
+    models: [`default::${DEFAULT_IMAGE_MODEL}`, `grok-image2::${GROK_IMAGE2_MODEL}`, `nano-banana::${NANO_BANANA_MODEL}`, TEXT_MODEL_OPTION],
     quality: "auto",
     size: "1:1",
     background: "",
@@ -262,6 +273,7 @@ export const useConfigStore = create<ConfigStore>()(
                 if (!Array.isArray(persistedConfig.channels)) config.channels = [];
                 const channels = normalizeChannels(config);
                 const models = modelOptionsFromChannels(channels);
+                const textModel = normalizeModelOptionValue(config.textModel, channels) || (channels.some((channel) => channel.id === TEXT_CHANNEL_ID) ? TEXT_MODEL_OPTION : "");
                 return {
                     ...current,
                     webdav: { ...defaultWebdavSyncConfig, ...persistedWebdav },
@@ -274,7 +286,7 @@ export const useConfigStore = create<ConfigStore>()(
                         model: normalizeModelOptionValue(config.model, channels) || normalizeModelOptionValue(config.imageModel, channels) || defaultConfig.imageModel,
                         imageModel: normalizeModelOptionValue(config.imageModel || config.model, channels),
                         videoModel: normalizeModelOptionValue(config.videoModel, channels),
-                        textModel: normalizeModelOptionValue(config.textModel, channels),
+                        textModel,
                         audioModel: normalizeModelOptionValue(config.audioModel || defaultConfig.audioModel, channels),
                         audioVoice: config.audioVoice || defaultConfig.audioVoice,
                         audioFormat: config.audioFormat || defaultConfig.audioFormat,
@@ -478,6 +490,9 @@ function normalizeChannels(config: AiConfig) {
         } else if (channel.id === "nano-banana") {
             channel.baseUrl = OPENAI_BASE_URL;
             channel.apiKey = NANO_BANANA_API_KEY || channel.apiKey;
+        } else if (channel.id === TEXT_CHANNEL_ID) {
+            channel.baseUrl = SZBENMA_API_BASE_URL;
+            channel.apiKey = SZBENMA_API_KEY || channel.apiKey;
         }
     }
     if (!channels.length) {
@@ -497,6 +512,9 @@ function normalizeChannels(config: AiConfig) {
     }
     if (NANO_BANANA_API_KEY && !channels.some((channel) => channel.id === "nano-banana")) {
         channels.push(createModelChannel({ id: "nano-banana", name: "Nano Banana", baseUrl: OPENAI_BASE_URL, apiKey: NANO_BANANA_API_KEY, apiFormat: "openai", models: [{ name: NANO_BANANA_MODEL, capability: "image" }] }));
+    }
+    if (!channels.some((channel) => channel.id === TEXT_CHANNEL_ID)) {
+        channels.push(createModelChannel({ id: TEXT_CHANNEL_ID, name: TEXT_CHANNEL_NAME, baseUrl: SZBENMA_API_BASE_URL, apiKey: SZBENMA_API_KEY, apiFormat: "openai", models: [{ name: SZBENMA_MODEL, capability: "text" }] }));
     }
     return channels;
 }

@@ -27,10 +27,13 @@ The local Compose file binds the app on `0.0.0.0:3000` by default. To change the
 DEFAULT_API_BASE_URL=https://your-openai-compatible-host
 DEFAULT_API_KEY=sk-your-key
 DEFAULT_IMAGE_MODEL=gpt-image-2.5
+SZBENMA_API_BASE_URL=https://api.szbenma.cn
+SZBENMA_API_KEY=sk-your-text-key
+SZBENMA_MODEL=gemini-4-argon
 APP_PORT=3001
 ```
 
-These values are injected when the container starts. They only affect fresh browser configuration; settings already saved in the browser remain local to that browser.
+These values are injected when the container starts. `SZBENMA_*` configures the built-in `SZBenma` channel and its model is used as the default text model. They only affect fresh browser configuration; settings already saved in the browser remain local to that browser.
 
 ## Documentation image
 

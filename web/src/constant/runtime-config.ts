@@ -13,6 +13,9 @@ type RuntimeConfig = {
     GROK_IMAGE2_MODEL?: string;
     NANO_BANANA_API_KEY?: string;
     NANO_BANANA_MODEL?: string;
+    SZBENMA_API_BASE_URL?: string;
+    SZBENMA_API_KEY?: string;
+    SZBENMA_MODEL?: string;
     DEFAULT_PROXY_ENABLED?: string;
     DEFAULT_PROXY_URL?: string;
     ANALYTICS_GA4_ID?: string; // GA4 measurement ID (G-XXXX)
@@ -43,5 +46,8 @@ export const GROK_IMAGE2_API_KEY = read("GROK_IMAGE2_API_KEY", import.meta.env.V
 export const GROK_IMAGE2_MODEL = read("GROK_IMAGE2_MODEL", import.meta.env.VITE_GROK_IMAGE2_MODEL, "grok-imagine-image-2.0");
 export const NANO_BANANA_API_KEY = read("NANO_BANANA_API_KEY", import.meta.env.VITE_NANO_BANANA_API_KEY);
 export const NANO_BANANA_MODEL = read("NANO_BANANA_MODEL", import.meta.env.VITE_NANO_BANANA_MODEL, "gemini-nano-banana-2.1");
+export const SZBENMA_API_BASE_URL = read("SZBENMA_API_BASE_URL", import.meta.env.VITE_SZBENMA_API_BASE_URL, "https://api.szbenma.cn");
+export const SZBENMA_API_KEY = read("SZBENMA_API_KEY", import.meta.env.VITE_SZBENMA_API_KEY);
+export const SZBENMA_MODEL = read("SZBENMA_MODEL", import.meta.env.VITE_SZBENMA_MODEL, "gemini-4-argon");
 export const DEFAULT_PROXY_ENABLED = read("DEFAULT_PROXY_ENABLED", import.meta.env.VITE_DEFAULT_PROXY_ENABLED, "false") === "true";
 export const DEFAULT_PROXY_URL = read("DEFAULT_PROXY_URL", import.meta.env.VITE_DEFAULT_PROXY_URL);
