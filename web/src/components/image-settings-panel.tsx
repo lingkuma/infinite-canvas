@@ -9,12 +9,13 @@ import type { AiConfig } from "@/stores/use-config-store";
 
 const qualityOptions = [
     { value: "auto", labelKey: "auto" },
-    { value: "high", labelKey: "high" },
-    { value: "medium", labelKey: "medium" },
     { value: "low", labelKey: "low" },
+    { value: "medium", labelKey: "medium" },
+    { value: "high", labelKey: "high" },
+    { value: "xhigh", labelKey: "xhigh" },
+    { value: "max", labelKey: "max" },
 ];
 const DIMENSION_STEP = 16;
-const IMAGE_MIN_PIXELS = 655360;
 
 export const imageQualityOptions = qualityOptions.map((item) => ({ value: item.value, get label() { return i18n.t(`settingsPanels.common.${item.labelKey}`); } }));
 export const imageAspectOptions = mediaRatioOptions.map((item) => ({ value: item.value, label: item.value === "auto" ? i18n.t("settingsPanels.common.auto") : item.value }));
@@ -37,11 +38,10 @@ export function ImageSettingsPanel({ config, onConfigChange, theme, showTitle = 
     const count = Math.max(1, Math.min(maxCount, Math.floor(Math.abs(Number(config.count)) || 1)));
     const activeSize = config.size || "auto";
     const transparentBackground = config.background === "transparent";
-    const sizeOptions = { step: snapDimensionToStep ? DIMENSION_STEP : 1, minPixels: IMAGE_MIN_PIXELS };
     const selectedScale = inferMediaScale(activeSize);
     const selectedRatio = inferMediaRatio(activeSize);
-    const dimensions = readMediaDimensions(activeSize, selectedScale, selectedRatio, sizeOptions);
-    const applySize = (scale: string, ratio: string) => onConfigChange("size", computeMediaSize(scale, ratio === "auto" ? "auto" : ratio, sizeOptions));
+    const dimensions = readMediaDimensions(activeSize, selectedScale, selectedRatio);
+    const applySize = (scale: string, ratio: string) => onConfigChange("size", computeMediaSize(scale, ratio));
     const selectScale = (scale: string) => applySize(scale, selectedRatio === "auto" ? "1:1" : selectedRatio);
     const selectRatio = (ratio: string) => applySize(selectedScale, ratio);
     const updateDimension = (key: "width" | "height", value: number | null) => {
@@ -65,7 +65,7 @@ export function ImageSettingsPanel({ config, onConfigChange, theme, showTitle = 
                 {showTitle ? <div className="text-lg font-semibold">{t("settingsPanels.image.title")}</div> : null}
                 <div className="space-y-2.5">
                     <SettingTitle color={theme.node.muted}>{t("settingsPanels.image.quality")}</SettingTitle>
-                    <div className="grid grid-cols-4 gap-2.5">
+                    <div className="grid grid-cols-3 gap-2.5">
                         {qualityOptions.map((item) => (
                             <OptionPill key={item.value} selected={quality === item.value} theme={theme} onClick={() => onConfigChange("quality", item.value)}>
                                 {t(`settingsPanels.common.${item.labelKey}`)}
@@ -163,7 +163,7 @@ export function ImageSettingsTheme({ theme, children }: { theme: CanvasTheme; ch
 }
 
 export function imageQualityLabel(value: string) {
-    return (["auto", "high", "medium", "low"].includes(value) ? i18n.t(`settingsPanels.common.${value}`) : value);
+    return qualityOptions.some((item) => item.value === value) ? i18n.t(`settingsPanels.common.${value}`) : value;
 }
 
 export function imageSizeLabel(size: string) {
