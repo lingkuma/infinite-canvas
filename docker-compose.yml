@@ -18,6 +18,9 @@ services:
       SZBENMA_API_BASE_URL: ${SZBENMA_API_BASE_URL:-https://api.szbenma.cn}
       SZBENMA_API_KEY: ${SZBENMA_API_KEY:-}
       SZBENMA_MODEL: ${SZBENMA_MODEL:-gemini-4-argon}
+      AUTODL_API_BASE_URL: ${AUTODL_API_BASE_URL:-https://www.autodl.art/api}
+      AUTODL_API_KEY: ${AUTODL_API_KEY:-}
+      AUTODL_MODEL: ${AUTODL_MODEL:-gpt-image-2.5-sunburst}
       DEFAULT_PROXY_ENABLED: ${DEFAULT_PROXY_ENABLED:-false}
       DEFAULT_PROXY_URL: ${DEFAULT_PROXY_URL:-}
     restart: unless-stopped

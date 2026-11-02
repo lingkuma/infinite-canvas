@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 import { nanoid } from "nanoid";
 
 import i18n from "@/i18n";
-import { DEFAULT_API_BASE_URL, DEFAULT_API_KEY, DEFAULT_IMAGE_MODEL, DEFAULT_PROXY_ENABLED, DEFAULT_PROXY_URL, GROK_IMAGE2_API_KEY, GROK_IMAGE2_MODEL, NANO_BANANA_API_KEY, NANO_BANANA_MODEL, SZBENMA_API_BASE_URL, SZBENMA_API_KEY, SZBENMA_MODEL } from "@/constant/runtime-config";
+import { AUTODL_API_BASE_URL, AUTODL_API_KEY, AUTODL_MODEL, DEFAULT_API_BASE_URL, DEFAULT_API_KEY, DEFAULT_IMAGE_MODEL, DEFAULT_PROXY_ENABLED, DEFAULT_PROXY_URL, GROK_IMAGE2_API_KEY, GROK_IMAGE2_MODEL, NANO_BANANA_API_KEY, NANO_BANANA_MODEL, SZBENMA_API_BASE_URL, SZBENMA_API_KEY, SZBENMA_MODEL } from "@/constant/runtime-config";
 
 export type ApiCallFormat = "openai" | "gemini";
 export type ModelCapability = "image" | "video" | "text" | "audio";
@@ -81,6 +81,9 @@ const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com";
 const TEXT_CHANNEL_ID = "szbenma";
 const TEXT_CHANNEL_NAME = "SZBenma";
 const TEXT_MODEL_OPTION = `${TEXT_CHANNEL_ID}::${SZBENMA_MODEL}`;
+const AUTODL_CHANNEL_ID = "autodl";
+const AUTODL_CHANNEL_NAME = "autodl支持2K";
+const AUTODL_MODEL_OPTION = `${AUTODL_CHANNEL_ID}::${AUTODL_MODEL}`;
 export const LOCAL_PROXY_PACKAGE = "@basketikun/canvas-proxy";
 export const DEFAULT_LOCAL_PROXY_URL = DEFAULT_PROXY_URL || "http://127.0.0.1:23210";
 
@@ -117,6 +120,14 @@ export const defaultConfig: AiConfig = {
             models: [{ name: NANO_BANANA_MODEL, capability: "image" }],
         },
         {
+            id: AUTODL_CHANNEL_ID,
+            name: AUTODL_CHANNEL_NAME,
+            baseUrl: AUTODL_API_BASE_URL,
+            apiKey: AUTODL_API_KEY,
+            apiFormat: "openai",
+            models: [{ name: AUTODL_MODEL, capability: "image" }],
+        },
+        {
             id: TEXT_CHANNEL_ID,
             name: TEXT_CHANNEL_NAME,
             baseUrl: SZBENMA_API_BASE_URL,
@@ -125,8 +136,8 @@ export const defaultConfig: AiConfig = {
             models: [{ name: SZBENMA_MODEL, capability: "text" }],
         },
     ],
-    model: `default::${DEFAULT_IMAGE_MODEL}`,
-    imageModel: `default::${DEFAULT_IMAGE_MODEL}`,
+    model: AUTODL_MODEL_OPTION,
+    imageModel: AUTODL_MODEL_OPTION,
     videoModel: "",
     textModel: TEXT_MODEL_OPTION,
     audioModel: "",
@@ -141,7 +152,7 @@ export const defaultConfig: AiConfig = {
     videoMode: "frames",
     systemPrompt: "",
     reasoningEffort: "auto",
-    models: [`default::${DEFAULT_IMAGE_MODEL}`, `grok-image2::${GROK_IMAGE2_MODEL}`, `nano-banana::${NANO_BANANA_MODEL}`, TEXT_MODEL_OPTION],
+    models: [`default::${DEFAULT_IMAGE_MODEL}`, `grok-image2::${GROK_IMAGE2_MODEL}`, `nano-banana::${NANO_BANANA_MODEL}`, AUTODL_MODEL_OPTION, TEXT_MODEL_OPTION],
     quality: "auto",
     size: "1:1",
     background: "",
@@ -501,6 +512,10 @@ function normalizeChannels(config: AiConfig) {
         } else if (channel.id === "nano-banana") {
             channel.baseUrl = OPENAI_BASE_URL;
             channel.apiKey = NANO_BANANA_API_KEY || channel.apiKey;
+        } else if (channel.id === AUTODL_CHANNEL_ID) {
+            channel.baseUrl = AUTODL_API_BASE_URL;
+            channel.apiKey = AUTODL_API_KEY || channel.apiKey;
+            if (!channel.models.some((model) => model.name === AUTODL_MODEL)) channel.models.unshift({ name: AUTODL_MODEL, capability: "image" });
         } else if (channel.id === TEXT_CHANNEL_ID) {
             channel.baseUrl = SZBENMA_API_BASE_URL;
             channel.apiKey = SZBENMA_API_KEY || channel.apiKey;
@@ -523,6 +538,9 @@ function normalizeChannels(config: AiConfig) {
     }
     if (NANO_BANANA_API_KEY && !channels.some((channel) => channel.id === "nano-banana")) {
         channels.push(createModelChannel({ id: "nano-banana", name: "Nano Banana", baseUrl: OPENAI_BASE_URL, apiKey: NANO_BANANA_API_KEY, apiFormat: "openai", models: [{ name: NANO_BANANA_MODEL, capability: "image" }] }));
+    }
+    if (!channels.some((channel) => channel.id === AUTODL_CHANNEL_ID)) {
+        channels.push(createModelChannel({ id: AUTODL_CHANNEL_ID, name: AUTODL_CHANNEL_NAME, baseUrl: AUTODL_API_BASE_URL, apiKey: AUTODL_API_KEY, apiFormat: "openai", models: [{ name: AUTODL_MODEL, capability: "image" }] }));
     }
     if (!channels.some((channel) => channel.id === TEXT_CHANNEL_ID)) {
         channels.push(createModelChannel({ id: TEXT_CHANNEL_ID, name: TEXT_CHANNEL_NAME, baseUrl: SZBENMA_API_BASE_URL, apiKey: SZBENMA_API_KEY, apiFormat: "openai", models: [{ name: SZBENMA_MODEL, capability: "text" }] }));
