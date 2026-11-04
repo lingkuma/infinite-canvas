@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 import { nanoid } from "nanoid";
 
 import i18n from "@/i18n";
-import { AUTODL_API_BASE_URL, AUTODL_API_KEY, AUTODL_MODEL, DEFAULT_API_BASE_URL, DEFAULT_API_KEY, DEFAULT_IMAGE_MODEL, DEFAULT_PROXY_ENABLED, DEFAULT_PROXY_URL, GROK_IMAGE2_API_KEY, GROK_IMAGE2_MODEL, NANO_BANANA_API_KEY, NANO_BANANA_MODEL, SZBENMA_API_BASE_URL, SZBENMA_API_KEY, SZBENMA_MODEL } from "@/constant/runtime-config";
+import { AUTODL_API_BASE_URL, AUTODL_API_KEY, AUTODL_MODEL, DEFAULT_API_BASE_URL, DEFAULT_API_KEY, DEFAULT_IMAGE_MODEL, DEFAULT_PROXY_ENABLED, DEFAULT_PROXY_URL, GROK_IMAGE2_API_KEY, GROK_IMAGE2_MODEL, NANO_BANANA_API_KEY, NANO_BANANA_MODEL, SZBENMA_API_BASE_URL, SZBENMA_API_KEY, SZBENMA_MODEL, YYDS0_API_BASE_URL, YYDS0_API_KEY, YYDS0_MODEL } from "@/constant/runtime-config";
 
 export type ApiCallFormat = "openai" | "gemini";
 export type ModelCapability = "image" | "video" | "text" | "audio";
@@ -84,8 +84,24 @@ const TEXT_MODEL_OPTION = `${TEXT_CHANNEL_ID}::${SZBENMA_MODEL}`;
 const AUTODL_CHANNEL_ID = "autodl";
 const AUTODL_CHANNEL_NAME = "autodl支持2K";
 const AUTODL_MODEL_OPTION = `${AUTODL_CHANNEL_ID}::${AUTODL_MODEL}`;
+const YYDS0_CHANNEL_ID = "yyds0";
+const YYDS0_CHANNEL_NAME = "YYDS 0站 gpt 2.5";
 export const LOCAL_PROXY_PACKAGE = "@basketikun/canvas-proxy";
 export const DEFAULT_LOCAL_PROXY_URL = DEFAULT_PROXY_URL || "http://127.0.0.1:23210";
+// 每次部署（重新构建，__DEPLOY_ID__ 变化）后的第一次加载，用部署端设定的默认模型覆盖浏览器里保存的全局模型选择，
+// 其他人不用清缓存；切换过一次后，用户自己的模型选择不再被覆盖，直到下一次部署。
+const DEFAULT_MODEL_SWITCH_KEY = "infinite-canvas:default_model_switch";
+
+function takeDeployModelSwitch() {
+    const deployId = typeof __DEPLOY_ID__ === "string" ? __DEPLOY_ID__ : "";
+    try {
+        if (localStorage.getItem(DEFAULT_MODEL_SWITCH_KEY) === deployId) return false;
+        localStorage.setItem(DEFAULT_MODEL_SWITCH_KEY, deployId);
+        return true;
+    } catch {
+        return true;
+    }
+}
 
 export const defaultConfig: AiConfig = {
     channelMode: "local",
@@ -99,9 +115,7 @@ export const defaultConfig: AiConfig = {
             baseUrl: OPENAI_BASE_URL,
             apiKey: DEFAULT_API_KEY,
             apiFormat: "openai",
-            models: [
-                { name: DEFAULT_IMAGE_MODEL, capability: "image" },
-            ],
+            models: [{ name: DEFAULT_IMAGE_MODEL, capability: "image" }],
         },
         {
             id: "grok-image2",
@@ -110,6 +124,14 @@ export const defaultConfig: AiConfig = {
             apiKey: GROK_IMAGE2_API_KEY,
             apiFormat: "openai",
             models: [{ name: GROK_IMAGE2_MODEL, capability: "image" }],
+        },
+        {
+            id: YYDS0_CHANNEL_ID,
+            name: YYDS0_CHANNEL_NAME,
+            baseUrl: YYDS0_API_BASE_URL,
+            apiKey: YYDS0_API_KEY,
+            apiFormat: "openai",
+            models: [{ name: YYDS0_MODEL, capability: "image" }],
         },
         {
             id: "nano-banana",
@@ -152,7 +174,7 @@ export const defaultConfig: AiConfig = {
     videoMode: "frames",
     systemPrompt: "",
     reasoningEffort: "auto",
-    models: [`default::${DEFAULT_IMAGE_MODEL}`, `grok-image2::${GROK_IMAGE2_MODEL}`, `nano-banana::${NANO_BANANA_MODEL}`, AUTODL_MODEL_OPTION, TEXT_MODEL_OPTION],
+    models: [`default::${DEFAULT_IMAGE_MODEL}`, `grok-image2::${GROK_IMAGE2_MODEL}`, `yyds0::${YYDS0_MODEL}`, `nano-banana::${NANO_BANANA_MODEL}`, AUTODL_MODEL_OPTION, TEXT_MODEL_OPTION],
     quality: "auto",
     size: "1:1",
     background: "",
@@ -294,6 +316,8 @@ export const useConfigStore = create<ConfigStore>()(
                 const channels = normalizeChannels(config);
                 const models = modelOptionsFromChannels(channels);
                 const textModel = normalizeModelOptionValue(config.textModel, channels) || (channels.some((channel) => channel.id === TEXT_CHANNEL_ID) ? TEXT_MODEL_OPTION : "");
+                const appliedDefaultModel = takeDeployModelSwitch();
+
                 return {
                     ...current,
                     webdav: { ...defaultWebdavSyncConfig, ...persistedWebdav },
@@ -303,8 +327,8 @@ export const useConfigStore = create<ConfigStore>()(
                         apiFormat: normalizeApiFormat(config.apiFormat),
                         channels,
                         models,
-                        model: normalizeModelOptionValue(config.model, channels) || normalizeModelOptionValue(config.imageModel, channels) || defaultConfig.imageModel,
-                        imageModel: normalizeModelOptionValue(config.imageModel || config.model, channels),
+                        model: appliedDefaultModel ? defaultConfig.imageModel : normalizeModelOptionValue(config.model, channels) || normalizeModelOptionValue(config.imageModel, channels) || defaultConfig.imageModel,
+                        imageModel: appliedDefaultModel ? defaultConfig.imageModel : normalizeModelOptionValue(config.imageModel || config.model, channels) || defaultConfig.imageModel,
                         videoModel: normalizeModelOptionValue(config.videoModel, channels),
                         textModel,
                         audioModel: normalizeModelOptionValue(config.audioModel || defaultConfig.audioModel, channels),
@@ -512,6 +536,10 @@ function normalizeChannels(config: AiConfig) {
         } else if (channel.id === "nano-banana") {
             channel.baseUrl = OPENAI_BASE_URL;
             channel.apiKey = NANO_BANANA_API_KEY || channel.apiKey;
+        } else if (channel.id === YYDS0_CHANNEL_ID) {
+            channel.baseUrl = YYDS0_API_BASE_URL;
+            channel.apiKey = YYDS0_API_KEY || channel.apiKey;
+            if (!channel.models.some((model) => model.name === YYDS0_MODEL)) channel.models.unshift({ name: YYDS0_MODEL, capability: "image" });
         } else if (channel.id === AUTODL_CHANNEL_ID) {
             channel.baseUrl = AUTODL_API_BASE_URL;
             channel.apiKey = AUTODL_API_KEY || channel.apiKey;
@@ -521,20 +549,14 @@ function normalizeChannels(config: AiConfig) {
             channel.apiKey = SZBENMA_API_KEY || channel.apiKey;
         }
     }
-    if (!channels.length) {
-        channels.push(
-            createModelChannel({
-                id: "default",
-                name: i18n.t("config.channels.defaultName"),
-                baseUrl: OPENAI_BASE_URL,
-                apiKey: DEFAULT_API_KEY,
-                apiFormat: config.apiFormat || defaultConfig.apiFormat,
-                models: [{ name: DEFAULT_IMAGE_MODEL, capability: "image" }],
-            }),
-        );
+    if (!channels.some((channel) => channel.id === "default")) {
+        channels.unshift(createModelChannel({ id: "default", name: i18n.t("config.channels.defaultName"), baseUrl: OPENAI_BASE_URL, apiKey: DEFAULT_API_KEY, apiFormat: config.apiFormat || defaultConfig.apiFormat, models: [{ name: DEFAULT_IMAGE_MODEL, capability: "image" }] }));
     }
     if (GROK_IMAGE2_API_KEY && !channels.some((channel) => channel.id === "grok-image2")) {
         channels.push(createModelChannel({ id: "grok-image2", name: "Grok Image 2", baseUrl: OPENAI_BASE_URL, apiKey: GROK_IMAGE2_API_KEY, apiFormat: "openai", models: [{ name: GROK_IMAGE2_MODEL, capability: "image" }] }));
+    }
+    if (!channels.some((channel) => channel.id === YYDS0_CHANNEL_ID)) {
+        channels.push(createModelChannel({ id: YYDS0_CHANNEL_ID, name: YYDS0_CHANNEL_NAME, baseUrl: YYDS0_API_BASE_URL, apiKey: YYDS0_API_KEY, apiFormat: "openai", models: [{ name: YYDS0_MODEL, capability: "image" }] }));
     }
     if (NANO_BANANA_API_KEY && !channels.some((channel) => channel.id === "nano-banana")) {
         channels.push(createModelChannel({ id: "nano-banana", name: "Nano Banana", baseUrl: OPENAI_BASE_URL, apiKey: NANO_BANANA_API_KEY, apiFormat: "openai", models: [{ name: NANO_BANANA_MODEL, capability: "image" }] }));

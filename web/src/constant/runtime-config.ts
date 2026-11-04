@@ -19,6 +19,9 @@ type RuntimeConfig = {
     AUTODL_API_BASE_URL?: string;
     AUTODL_API_KEY?: string;
     AUTODL_MODEL?: string;
+    YYDS0_API_BASE_URL?: string;
+    YYDS0_API_KEY?: string;
+    YYDS0_MODEL?: string;
     DEFAULT_PROXY_ENABLED?: string;
     DEFAULT_PROXY_URL?: string;
     ANALYTICS_GA4_ID?: string; // GA4 measurement ID (G-XXXX)
@@ -55,5 +58,8 @@ export const SZBENMA_MODEL = read("SZBENMA_MODEL", import.meta.env.VITE_SZBENMA_
 export const AUTODL_API_BASE_URL = read("AUTODL_API_BASE_URL", import.meta.env.VITE_AUTODL_API_BASE_URL, "https://www.autodl.art/api");
 export const AUTODL_API_KEY = read("AUTODL_API_KEY", import.meta.env.VITE_AUTODL_API_KEY);
 export const AUTODL_MODEL = read("AUTODL_MODEL", import.meta.env.VITE_AUTODL_MODEL, "gpt-image-2.5-sunburst");
+export const YYDS0_API_BASE_URL = read("YYDS0_API_BASE_URL", import.meta.env.VITE_YYDS0_API_BASE_URL, "https://yyds.chybenzun.top");
+export const YYDS0_API_KEY = read("YYDS0_API_KEY", import.meta.env.VITE_YYDS0_API_KEY);
+export const YYDS0_MODEL = read("YYDS0_MODEL", import.meta.env.VITE_YYDS0_MODEL, "gpt-image-2.5");
 export const DEFAULT_PROXY_ENABLED = read("DEFAULT_PROXY_ENABLED", import.meta.env.VITE_DEFAULT_PROXY_ENABLED, "false") === "true";
 export const DEFAULT_PROXY_URL = read("DEFAULT_PROXY_URL", import.meta.env.VITE_DEFAULT_PROXY_URL);

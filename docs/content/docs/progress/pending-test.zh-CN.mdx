@@ -5,7 +5,7 @@ description: 当前版本已实现但仍需人工验证的变更项
 
 # 待测试
 
-- 本地部署渠道：刷新带有旧缓存的浏览器后，内置的 `default`、`grok-image2`（YYDS）、`Nano Banana`、`autodl支持2K` 和 `SZBenma` 渠道应使用运行时注入的接口地址和密钥，不需要手动清 localStorage；用户自建渠道保持不变。新配置默认图片模型为 `autodl::gpt-image-2.5-sunburst`，默认文本模型为 `szbenma::gemini-4-argon`；已有的全局和节点模型选择刷新后不应改变。
+- 本地部署渠道：刷新带有旧缓存的浏览器后，内置的 `default`、`grok-image2`（YYDS）、`YYDS 0站 gpt 2.5`、`Nano Banana`、`autodl支持2K` 和 `SZBenma` 渠道应使用运行时注入的接口地址和密钥，不需要手动清 localStorage；用户自建渠道保持不变。每次部署后的第一次加载会把全局生图模型切成部署端设定的默认模型（`autodl::gpt-image-2.5-sunburst`），不用清缓存；之后用户在设置里手选的模型刷新后保持不变，画布节点里单独保存的模型也不受影响。
 - AutoDL 图片渠道：内置的 `autodl支持2K` 渠道应指向 `https://www.autodl.art/api` 并使用注入的密钥，模型列表包含 `gpt-image-2.5-sunburst`；分辨率选择 `2k` 时应能正常文生图与编辑图并返回 2K 尺寸。
 - 本地部署的画布模型选择：全局默认为 Nano Banana 时，在生成配置节点和节点提示词面板中选择 `gpt-image-2.5` 应立即显示为选中，关闭重开面板、刷新页面及再次生成时仍保留该模型；全局默认改回 GPT 模型后刷新也应保留。
 - 模型清理：刷新已有本地配置的浏览器后，`grok-imagine-video`、`gpt-5.5`、`gpt-4o-mini-tts` 应被移除，`gpt-image-2.5` 仍可正常生图。

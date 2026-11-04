@@ -2,6 +2,8 @@
 
 declare const __APP_VERSION__: string;
 declare const __APP_RELEASES__: import("@/lib/release").ReleaseInfo[];
+// 每次构建唯一，用于判断浏览器是否已经历过这次部署。
+declare const __DEPLOY_ID__: string;
 
 interface ImportMetaEnv {
     // Comma-separated local development plugin URLs, refetched on every startup without caching or persistence.

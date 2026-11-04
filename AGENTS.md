@@ -70,6 +70,15 @@
 - 每次任务完成前，都要根据实际变更检查并更新 `docs/content/docs/progress/todo.mdx` 和 `docs/content/docs/progress/pending-test.mdx`；如果功能或待办没有变化，也要确认无需修改。
 - 文档不要写过期日期；除非用户明确要求记录具体时间。
 
+## 本地部署与默认配置
+
+- 本地部署链路：`web` 构建产物 `web/dist` → `Dockerfile.local-runtime` → 容器 `infinite-canvas`（用 `docker-compose.yml` 启动，对外端口取本机 `.env` 的 `APP_PORT`）。改完前端或渠道配置必须在 `web/` 下 `npm run build`，再 `docker compose -f docker-compose.yml up -d --build app`；只 `docker restart` 不会更新前端。
+- 运行时配置注入链路：本机 `.env` → compose 的 `environment` → `web/docker-entrypoint.sh` 生成 `/usr/share/nginx/html/config.js`（`window.__RUNTIME_CONFIG__`）→ `web/src/constant/runtime-config.ts` 读取。新增一个渠道要同时改这 4 处（外加 `normalizeChannels`），少一处就取不到地址或密钥。密钥只写在本机 `.env`，不要提交仓库。
+- 渠道配置强制覆盖（也就是「浏览器刷新后自动覆盖旧缓存」）：`web/src/stores/use-config-store.ts` 的 `normalizeChannels` 会按渠道 id 用运行时变量强制改写内置渠道的 `baseUrl` / `apiKey`（`default`、`grok-image2`、`nano-banana`、`autodl`、`szbenma`），并补齐缺失的内置渠道和最新模型名。新增内置渠道必须在这里加对应分支，否则用户浏览器里的旧地址、旧密钥不会更新。
+- 换默认模型用「按部署强制一次」的既有机制，不要删旧渠道或旧模型来逼用户改选：`web/src/stores/use-config-store.ts` 的 `takeDeployModelSwitch()` 用构建期常量 `__DEPLOY_ID__`（`vite.config.ts` 每次构建生成）和 localStorage 标记比对，**每次部署后的第一次加载**用 `defaultConfig.model` / `imageModel` 覆盖浏览器里保存的全局模型选择，其他人不用清缓存。切换过一次后用户自己改的模型不再被覆盖，直到下一次部署。换模型只改 `defaultConfig` 的默认值（和对应运行时环境变量），旧渠道继续保留、用户仍可手动选。
+- 覆盖范围只有全局模型选择：画布节点、生成配置节点里单独保存的模型不会被改。改动这套逻辑时不要退化成「每次刷新都强制」，否则用户手动选的模型会被反复重置。
+- `nginx.conf` 已对 `config.js` 配 `no-store`、对 `index.html` 配 `no-cache`，所以只改环境变量时重启容器后刷新页面即可生效。
+
 ## 发版本流程
 
 - 发版本时，先把 `CHANGELOG.md` 的 `Unreleased` 变更整理成新的版本记录，并保留空的 `Unreleased` 标题。

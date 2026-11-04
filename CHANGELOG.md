@@ -2,11 +2,13 @@
 
 ## Unreleased
 
++ [新增] 内置 `YYDS 0站 gpt 2.5` 图片渠道，模型 `gpt-image-2.5`，接口与密钥通过 `YYDS0_API_BASE_URL`、`YYDS0_API_KEY`、`YYDS0_MODEL` 运行时注入。
 + [新增] 内置 `autodl支持2K` 图片渠道，默认图片模型为 `gpt-image-2.5-sunburst`，接口与密钥通过 `AUTODL_API_BASE_URL`、`AUTODL_API_KEY`、`AUTODL_MODEL` 运行时注入。
 + [新增] 内置 `SZBenma` 文本渠道，默认文本模型为 `gemini-4-argon`，接口与密钥通过 `SZBENMA_API_BASE_URL`、`SZBENMA_API_KEY`、`SZBENMA_MODEL` 运行时注入。
 + [新增] 内置 `Nano Banana` 图片渠道，默认模型为 `gemini-nano-banana-2.1`，密钥通过 `NANO_BANANA_API_KEY`、`NANO_BANANA_MODEL` 运行时注入。
 + [新增] 内置 `grok-image2`（YYDS）图片渠道，默认模型为 `grok-imagine-image-2.0`，密钥通过 `GROK_IMAGE2_API_KEY`、`GROK_IMAGE2_MODEL` 运行时注入。
 + [调整] 默认生图模型改为 `autodl支持2K` 渠道的 `gpt-image-2.5-sunburst`，默认文本模型改为 `gemini-4-argon`，保留已有节点和用户手动选择的模型。
++ [调整] 每次部署后的第一次加载会把浏览器里保存的全局生图模型切换为部署端设定的默认模型（按构建期 `__DEPLOY_ID__` 只强制一次），其他人不用清缓存；之后用户手选的模型不再被覆盖，画布节点里单独保存的模型不受影响。
 + [调整] 本地部署默认渠道只保留 `gpt-image-2.5` 生图模型，移除 `grok-imagine-video`、`gpt-5.5` 和 `gpt-4o-mini-tts`。
 + [修复] 修复画布无法选中 `gpt-image-2.5` 的问题，节点与全局模型选择不再被默认模型覆盖。
 + [新增] Docker 部署支持通过运行时环境变量注入默认接口地址、密钥和各渠道模型，并支持用 `APP_PORT` 指定对外端口。

@@ -49,5 +49,7 @@ export default defineConfig({
     define: {
         __APP_VERSION__: JSON.stringify(localVersion),
         __APP_RELEASES__: JSON.stringify(parseChangelog(localChangelog)),
+        // 每次构建都不同：部署后浏览器第一次加载会应用部署端设定的默认模型。
+        __DEPLOY_ID__: JSON.stringify(`${localVersion}-${Date.now().toString(36)}`),
     },
 });

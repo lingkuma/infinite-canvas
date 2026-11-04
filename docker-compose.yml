@@ -21,6 +21,9 @@ services:
       AUTODL_API_BASE_URL: ${AUTODL_API_BASE_URL:-https://www.autodl.art/api}
       AUTODL_API_KEY: ${AUTODL_API_KEY:-}
       AUTODL_MODEL: ${AUTODL_MODEL:-gpt-image-2.5-sunburst}
+      YYDS0_API_BASE_URL: ${YYDS0_API_BASE_URL:-https://yyds.chybenzun.top}
+      YYDS0_API_KEY: ${YYDS0_API_KEY:-}
+      YYDS0_MODEL: ${YYDS0_MODEL:-gpt-image-2.5}
       DEFAULT_PROXY_ENABLED: ${DEFAULT_PROXY_ENABLED:-false}
       DEFAULT_PROXY_URL: ${DEFAULT_PROXY_URL:-}
     restart: unless-stopped

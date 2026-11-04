@@ -26,6 +26,9 @@ SZBENMA_MODEL=$(printf '%s' "${SZBENMA_MODEL:-gemini-4-argon}" | tr -cd 'A-Za-z0
 AUTODL_API_BASE_URL=$(printf '%s' "${AUTODL_API_BASE_URL:-https://www.autodl.art/api}" | tr -cd 'A-Za-z0-9:/?&=_#.-')
 AUTODL_API_KEY=$(printf '%s' "${AUTODL_API_KEY:-}" | tr -cd 'A-Za-z0-9._~-')
 AUTODL_MODEL=$(printf '%s' "${AUTODL_MODEL:-gpt-image-2.5-sunburst}" | tr -cd 'A-Za-z0-9._:-')
+YYDS0_API_BASE_URL=$(printf '%s' "${YYDS0_API_BASE_URL:-https://yyds.chybenzun.top}" | tr -cd 'A-Za-z0-9:/?&=_#.-')
+YYDS0_API_KEY=$(printf '%s' "${YYDS0_API_KEY:-}" | tr -cd 'A-Za-z0-9._~-')
+YYDS0_MODEL=$(printf '%s' "${YYDS0_MODEL:-gpt-image-2.5}" | tr -cd 'A-Za-z0-9._:-')
 DEFAULT_PROXY_ENABLED=$(printf '%s' "${DEFAULT_PROXY_ENABLED:-false}" | tr -cd 'A-Za-z0-9')
 DEFAULT_PROXY_URL=$(printf '%s' "${DEFAULT_PROXY_URL:-}" | tr -cd 'A-Za-z0-9:/?&=_#.-')
 
@@ -44,6 +47,9 @@ window.__RUNTIME_CONFIG__ = {
   AUTODL_API_BASE_URL: "${AUTODL_API_BASE_URL}",
   AUTODL_API_KEY: "${AUTODL_API_KEY}",
   AUTODL_MODEL: "${AUTODL_MODEL}",
+  YYDS0_API_BASE_URL: "${YYDS0_API_BASE_URL}",
+  YYDS0_API_KEY: "${YYDS0_API_KEY}",
+  YYDS0_MODEL: "${YYDS0_MODEL}",
   DEFAULT_PROXY_ENABLED: "${DEFAULT_PROXY_ENABLED}",
   DEFAULT_PROXY_URL: "${DEFAULT_PROXY_URL}",
   ANALYTICS_GA4_ID: "${GA4_ID}",
